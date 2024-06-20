@@ -1,0 +1,259 @@
+//// python code 
+class User:
+    def _init_(self, username, password):
+        self.username = username
+        self.password = password
+
+
+class Student(User):
+    def _init_(self, username, password, name, student_id):
+        super()._init_(username, password)
+        self.name = name
+        self.student_id = student_id
+        self.grades = {'English': None, 'Music': None, 'History': None, 'Science': None, 'Biology': None}
+        self.attendance = {}
+        self.portfolio = []
+
+    def view_grades(self):
+        print("Grades:")
+        for subject, grade in self.grades.items():
+            print(f"{subject}: {grade}")
+
+    def view_attendance(self):
+        print("Attendance:")
+        for date, status in self.attendance.items():
+            print(f"{date}: {status}")
+
+    def view_portfolio(self):
+        print("Portfolio Entries:")
+        for entry in self.portfolio:
+            print(entry)
+
+    def show_grades(self):
+        print("Grades:")
+        for subject, grade in self.grades.items():
+            print(f"{subject}: {grading_criteria(grade)}")
+
+
+class Teacher(User):
+    def _init_(self, username, password):
+        super()._init_(username, password)
+
+    def add_student(self, users, name, student_id, student_username, student_password):
+        student = Student(student_username, student_password, name, student_id)
+        users.append(student)
+        print("Student added successfully.")
+
+    def add_grade(self, users, student_id, subject, grade):
+        for user in users:
+            if isinstance(user, Student) and user.student_id == student_id:
+                user.grades[subject] = grade
+                print("Grade added successfully.")
+                return
+        print("Student not found.")
+
+    # Existing methods...
+
+    def distribution_of_grades(self, users):
+        print("Distribution of Grades")
+        print("Available Subjects:")
+        # Collecting all subjects from all students
+        all_subjects = set()
+        for user in users:
+            if isinstance(user, Student):
+                all_subjects.update(user.grades.keys())
+
+        if not all_subjects:
+            print("There are no students registered in the system.")
+            return
+
+        for i, subject in enumerate(all_subjects, 1):
+            print(f"{i}. {subject}")
+
+        subject_choice = input("Enter subject number: ")
+
+        # Convert input to index
+        try:
+            subject_index = int(subject_choice) - 1
+            if subject_index < 0 or subject_index >= len(all_subjects):
+                raise ValueError
+        except ValueError:
+            print("Invalid subject number.")
+            return
+
+        subject = list(all_subjects)[subject_index]
+
+        students_found = False
+        for user in users:
+            if isinstance(user, Student):
+                if subject in user.grades:
+                    students_found = True
+                    print(f"\nStudent: {user.name}")
+                    print(f"Subject: {subject}")
+                    print("Enter total marks for the assignments:")
+                    total_assignments = float(input())
+                    print("Enter total marks for the final exam:")
+                    total_final_exam = float(input())
+                    print("Enter total marks for the midterm exams:")
+                    total_midterm_exams = float(input())
+                    print("Enter total marks for the short tests:")
+                    total_short_tests = float(input())
+                    print("Enter the project grade:")
+                    project_grade = float(input())
+
+                    # Calculate total marks
+                    total_marks = total_assignments + total_final_exam + total_midterm_exams + total_short_tests + project_grade
+
+                    # Store grades
+                    user.grades[subject] = total_marks
+
+        if not students_found:
+            print("There are no students registered in this system for the selected subject.")
+
+
+def grading_criteria(total_marks):
+    if total_marks is None:
+        return "Not graded"
+    if total_marks >= 95:
+        return "A+"
+    elif total_marks >= 90:
+        return "A"
+    elif total_marks >= 85:
+        return "B+"
+    elif total_marks >= 80:
+        return "B"
+    elif total_marks >= 75:
+        return "C+"
+    elif total_marks >= 70:
+        return "C"
+    elif total_marks >= 65:
+        return "D+"
+    elif total_marks >= 60:
+        return "D"
+    else:
+        return "F"
+
+
+# Authentication function
+def authenticate(username, password, users):
+    for user in users:
+        if user.username == username and user.password == password:
+            return user
+    return None
+
+
+# Main function
+def main():
+    users = [Teacher("t", "123")]
+
+    while True:
+        print("\nStudent Grade and Academic Performance Tracking System")
+        print("1. Student Login")
+        print("2. Teacher Login")
+        print("3. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            username = input("Enter username: ")
+            password = input("Enter password: ")
+            user = authenticate(username, password, users)
+            if isinstance(user, Student):
+                print("Welcome, Student!")
+                while True:
+                    print("\nStudent Menu")
+                    print("1. View Grades")
+                    print("2. View Attendance")
+                    print("3. View Portfolio")
+                    print("4. Show Grades")
+                    print("5. Exit")
+                    student_choice = input("Enter your choice: ")
+                    if student_choice == "1":
+                        user.view_grades()
+                    elif student_choice == "2":
+                        user.view_attendance()
+                    elif student_choice == "3":
+                        user.view_portfolio()
+                    elif student_choice == "4":
+                        user.show_grades()
+                    elif student_choice == "5":
+                        break
+                    else:
+                        print("Invalid choice. Please try again.")
+
+            else:
+                print("Invalid username or password.")
+
+        elif choice == "2":
+            username = input("Enter username: ")
+            password = input("Enter password: ")
+            user = authenticate(username, password, users)
+            if isinstance(user, Teacher):
+                print("Welcome, Teacher!")
+                while True:
+                    print("\nTeacher Menu")
+                    print("1. Add Student")
+                    print("2. Add Grade")
+                    print("3. Update Grade")
+                    print("4. Delete Grade")
+                    print("5. Mark Attendance")
+                    print("6. Add Portfolio Entry")
+                    print("7. List All Students")
+                    print("8. Get Student Information")
+                    print("9. Distribution of Grades")
+                    print("10. Exit")
+                    teacher_choice = input("Enter your choice: ")
+                    if teacher_choice == "1":
+                        name = input("Enter student name: ")
+                        student_id = input("Enter student ID: ")
+                        student_username = input("Enter student username: ")
+                        student_password = input("Enter student password: ")
+                        user.add_student(users, name, student_id, student_username, student_password)
+                    elif teacher_choice == "2":
+                        student_id = input("Enter student ID: ")
+                        subject = input("Enter subject: ")
+                        grade = float(input("Enter grade: "))
+                        user.add_grade(users, student_id, subject, grade)
+                    elif teacher_choice == "3":
+                        student_id = input("Enter student ID: ")
+                        subject = input("Enter subject (English, Music, History, Science, Biology): ")
+                        new_grade = float(input("Enter new grade: "))
+                        user.update_grade(users, student_id, subject, new_grade)
+                    elif teacher_choice == "4":
+                        student_id = input("Enter student ID: ")
+                        subject = input("Enter subject: ")
+                        user.delete_grade(users, student_id, subject)
+                    elif teacher_choice == "5":
+                        student_id = input("Enter student ID: ")
+                        date = input("Enter date (YYYY-MM-DD): ")
+                        status = input("Enter attendance status (Present/Absent): ")
+                        user.mark_attendance(users, student_id, date, status)
+                    elif teacher_choice == "6":
+                        student_id = input("Enter student ID: ")
+                        entry_type = input("Enter entry type (Essay, Project, Assignment): ")
+                        entry = input("Enter portfolio entry: ")
+                        user.add_portfolio_entry(users, student_id, entry_type, entry)
+                    elif teacher_choice == "7":
+                        user.list_all_students(users)
+                    elif teacher_choice == "8":
+                        student_id = input("Enter student ID: ")
+                        user.get_student_information(users, student_id)
+                    elif teacher_choice == "9":
+                        user.distribution_of_grades(users)
+                    elif teacher_choice == "10":
+                        break
+                    else:
+                        print("Invalid choice. Please try again.")
+
+            else:
+                print("Invalid username or password.")
+
+        elif choice == "3":
+            print("Exiting...")
+            break
+
+        else:
+             print("Invalid choice. Please try again.")
+
+if _name_ == "_main_":
+    main()
