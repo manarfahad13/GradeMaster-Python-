@@ -1,4 +1,4 @@
-# GradeMaster using python 
+# GradeMaster using Python 
 ![image](https://github.com/user-attachments/assets/d2f5c79f-acd0-4b56-a7a4-32f8979602cc)
 ## Class Diagram:
 
