@@ -1,4 +1,6 @@
 # GradeMaster using Python 
+This project aims to create a Student Grade and Academic Performance Tracking System in Python. It features digital gradebooks, student portfolios, attendance tracking, and a user-friendly interface for efficient grade management, student progress monitoring, and enhanced parent-teacher communication.
+
 ![image](https://github.com/user-attachments/assets/d2f5c79f-acd0-4b56-a7a4-32f8979602cc)
 ## Class Diagram:
 
